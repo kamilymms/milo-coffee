@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milo Coffee - Café especial & cogumelos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        terra: {
+                            50: '#FBF9F5',
+                            100: '#F4EFEB',
+                            200: '#E6DDD1',
+                            300: '#C8B9A6',
+                            600: '#6A533E',
+                            700: '#4E3A2A',
+                            800: '#38281B',
+                            900: '#231810',
+                        },
+                        musgo: {
+                            DEFAULT: '#4A5D4E',
+                            dark: '#354338',
+                            light: '#E2EBE3',
+                        },
+                        creme: '#FAF8F5',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-terra-50 text-terra-800 antialiased selection:bg-musgo selection:text-white">
+
+    <!-- 1. Cabeçalho (Navbar) -->
+    <header class="sticky top-0 z-40 bg-terra-50/90 backdrop-blur-md border-b border-terra-200 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+                <div>
+                    <span class="text-lg font-bold tracking-tight text-terra-900 block leading-tight">Milo Coffee</span>
+                    <span class="text-[10px] text-musgo font-semibold tracking-widest uppercase block">Café & Cogumelos</span>
+                </div>
+            </a>
+
+            <!-- Menu Desktop -->
+            <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-terra-700">
+                <a href="#inicio" class="hover:text-musgo transition">Início</a>
+                <a href="#cogumelos" class="hover:text-musgo transition">Cogumelos In Natura</a>
+                <a href="#cafes" class="hover:text-musgo transition">Cafés Especiais</a>
+                <a href="#receitas" class="hover:text-musgo transition">Guia & Dicas</a>
+            </nav>
+
+            <!-- Ações & Botões -->
+            <div class="flex items-center gap-3">
+                <!-- Botão Dúvidas WhatsApp (Único uso do WhatsApp conforme solicitado) -->
+                <a href="https://wa.me/5531999999999?text=Olá!%20Gostaria%20de%20tirar%20uma%20dúvida%20sobre%20os%20produtos%20da%20Milo." target="_blank" class="hidden sm:flex text-terra-700 hover:text-musgo text-xs font-medium items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-terra-100/60 border border-terra-200 transition">
+                    <i class="fa-brands fa-whatsapp text-musgo text-base"></i>
+                    <span>Tirar Dúvidas</span>
+                </a>
+
+                <!-- Botão Carrinho -->
+                <button onclick="toggleCart()" class="relative bg-musgo hover:bg-musgo-dark text-white px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-sm font-medium shadow-sm">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span>Carrinho</span>
+                    <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-terra-900 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white">0</span>
+                </button>
+
+                <!-- Botão Menu Mobile -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-terra-800 p-2 text-xl focus:outline-none">
+                    <i class="fa-solid fa-bars" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-terra-200 px-6 py-4 space-y-3 shadow-lg">
+            <a href="#inicio" onclick="toggleMobileMenu()" class="block text-terra-800 font-medium py-1">Início</a>
+            <a href="#cogumelos" onclick="toggleMobileMenu()" class="block text-terra-800 font-medium py-1">Cogumelos In Natura</a>
+            <a href="#cafes" onclick="toggleMobileMenu()" class="block text-terra-800 font-medium py-1">Cafés Especiais</a>
+            <a href="#receitas" onclick="toggleMobileMenu()" class="block text-terra-800 font-medium py-1">Guia & Dicas</a>
+            <div class="pt-2 border-t border-terra-100">
+                <a href="https://wa.me/5531999999999?text=Olá!%20Gostaria%20de%20tirar%20uma%20dúvida." target="_blank" class="w-full bg-terra-100 text-musgo text-center py-2.5 rounded-xl font-medium flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> Tirar Dúvidas (WhatsApp)
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Gaveta do Carrinho & Fluxo de Checkout Integrado -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+        
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col">
+                <!-- Topo Dinâmico -->
+                <div class="p-6 bg-terra-900 text-white flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-basket-shopping text-musgo"></i>
+                        <h3 class="font-bold text-base" id="drawer-title">Sua Sacola</h3>
+                    </div>
+                    <button onclick="toggleCart()" class="text-terra-300 hover:text-white p-2">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Corpo Dinâmico (Itens -> Endereço -> Pagamento -> Sucesso) -->
+                <div id="drawer-body" class="flex-1 overflow-y-auto p-6 space-y-4">
+                    <!-- Renderizado via JavaScript -->
+                </div>
+
+                <!-- Rodapé Dinâmico -->
+                <div id="drawer-footer" class="p-6 bg-terra-50 border-t border-terra-200 space-y-4">
+                    <!-- Renderizado via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Hero Section (Início) -->
+    <section id="inicio" class="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-32 bg-gradient-to-b from-terra-100/50 to-terra-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-musgo/10 text-musgo-dark px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide">
+                        <i class="fa-solid fa-leaf"></i> Colheita Sustentável & Grãos Selecionados
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-terra-900 tracking-tight leading-none">
+                        A pureza da terra na sua mesa, <span class="text-musgo">do grão ao cogumelo.</span>
+                    </h1>
+                    <p class="text-base sm:text-lg text-terra-600 max-w-2xl mx-auto lg:mx-0">
+                       Descubra o empório artesanal Milo Coffee. Cogumelos in natura frescos colhidos semanalmente e cafés especiais com variações exclusivas.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                        <a href="#cogumelos" class="w-full sm:w-auto bg-musgo hover:bg-musgo-dark text-white font-medium px-8 py-3.5 rounded-xl shadow-md transition text-center">
+                            Explorar Cogumelos
+                        </a>
+                        <a href="#cafes" class="w-full sm:w-auto bg-white hover:bg-terra-100 text-terra-800 border border-terra-300 font-medium px-8 py-3.5 rounded-xl transition text-center">
+                            Ver Cafés Especiais
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:col-span-5 relative">
+                    <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-terra-200">
+                        <img src="page.jpg.jpg" alt="Milo Coffee" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Seção de Cogumelos In Natura -->
+    <section id="cogumelos" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-musgo font-semibold text-sm uppercase tracking-widest bg-musgo/10 px-3 py-1 rounded-full">Colhidos com Rigor</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-terra-900 mt-3 mb-4">Cogumelos In Natura</h2>
+                <p class="text-terra-600 text-base">
+                    Escolha entre as bandejas de 200g ou 400g (tamanho família) com entrega programada para manter o frescor absoluto.
+                </p>
+                <div class="mt-4 inline-flex items-center gap-2 text-xs font-medium text-terra-700 bg-terra-100 px-4 py-2 rounded-xl">
+                    <i class="fa-solid fa-calendar-days text-musgo"></i> Colheita e envios em Belo Horizonte: <strong>Terças e Quintas-feiras</strong>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Produto 1: Shimeji Branco -->
+                <div class="bg-terra-50 rounded-2xl p-5 border border-terra-200 flex flex-col justify-between hover:shadow-lg transition">
+                    <div>
+                        <div class="aspect-video rounded-xl overflow-hidden mb-4 bg-terra-200">
+                            <img src="shimeji.jpg.jpg" alt= "Shimeji Branco" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[10px] font-bold text-musgo uppercase tracking-wider">Frescor Absoluto</span>
+                        <h3 class="text-lg font-bold text-terra-900 mt-1 mb-1">Shimeji Branco</h3>
+                        <p class="text-xs text-terra-600 mb-4">Delicado e macio. Perfeito para refogados rápidos na manteiga.</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-xs font-semibold text-terra-700 mb-1">Selecione o tamanho:</label>
+                            <select id="var-shimeji-branco" class="w-full bg-white border border-terra-300 rounded-xl px-3 py-2 text-xs text-terra-800 focus:outline-none focus:border-musgo">
+                                <option value="Bandeja 200g|18.00">Bandeja 200g - R$ 18,00</option>
+                                <option value="Bandeja 400g (Família)|34.00">Bandeja 400g (Família) - R$ 34,00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addToCart('Shimeji Branco', 'var-shimeji-branco')" class="w-full bg-musgo hover:bg-musgo-dark text-white py-2.5 rounded-xl text-xs font-medium transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Adicionar ao Carrinho
+                    </button>
+                </div>
+
+                <!-- Produto 2: Champignon -->
+                <div class="bg-terra-50 rounded-2xl p-5 border border-terra-200 flex flex-col justify-between hover:shadow-lg transition">
+                    <div>
+                        <div class="aspect-video rounded-xl overflow-hidden mb-4 bg-terra-200">
+                            <img src="Champignon.jpg.jpg" alt="Shimeji Preto" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[10px] font-bold text-musgo uppercase tracking-wider">Mais Consistência</span>
+                        <h3 class="text-lg font-bold text-terra-900 mt-1 mb-1">Champignon</h3>
+                        <p class="text-xs text-terra-600 mb-4">Sabor mais terroso e marcante para sopas e massas.</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-xs font-semibold text-terra-700 mb-1">Selecione o tamanho:</label>
+                            <select id="var-Champignon" class="w-full bg-white border border-terra-300 rounded-xl px-3 py-2 text-xs text-terra-800 focus:outline-none focus:border-musgo">
+                                <option value="Bandeja 200g|20.00">Bandeja 200g - R$ 20,00</option>
+                                <option value="Bandeja 400g (Família)|38.00">Bandeja 400g (Família) - R$ 38,00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addToCart('Champignon', 'var-Champignon')" class="w-full bg-musgo hover:bg-musgo-dark text-white py-2.5 rounded-xl text-xs font-medium transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Adicionar ao Carrinho
+                    </button>
+                </div>
+
+                <!-- Produto 3: Shitake Fresco -->
+                <div class="bg-terra-50 rounded-2xl p-5 border border-terra-200 flex flex-col justify-between hover:shadow-lg transition">
+                    <div>
+                        <div class="aspect-video rounded-xl overflow-hidden mb-4 bg-terra-200">
+                            <img src="shitake.jpg.jpg" alt="Shitake" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[10px] font-bold text-musgo uppercase tracking-wider">Gourmet & Defumado</span>
+                        <h3 class="text-lg font-bold text-terra-900 mt-1 mb-1">Shitake Fresco</h3>
+                        <p class="text-xs text-terra-600 mb-4">Chapéu carnudo com notas naturais defumadas.</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-xs font-semibold text-terra-700 mb-1">Selecione o tamanho:</label>
+                            <select id="var-shitake" class="w-full bg-white border border-terra-300 rounded-xl px-3 py-2 text-xs text-terra-800 focus:outline-none focus:border-musgo">
+                                <option value="Bandeja 200g|22.00">Bandeja 200g - R$ 22,00</option>
+                                <option value="Bandeja 400g (Família)|42.00">Bandeja 400g (Família) - R$ 42,00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addToCart('Shitake Fresco', 'var-shitake')" class="w-full bg-musgo hover:bg-musgo-dark text-white py-2.5 rounded-xl text-xs font-medium transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Adicionar ao Carrinho
+                    </button>
+                </div>
+
+                <!-- Produto 4: Portobello -->
+                <div class="bg-terra-50 rounded-2xl p-5 border border-terra-200 flex flex-col justify-between hover:shadow-lg transition">
+                    <div>
+                        <div class="aspect-video rounded-xl overflow-hidden mb-4 bg-terra-200">
+                            <img src="portobello.jpg.jpg" alt="Portobello" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[10px] font-bold text-musgo uppercase tracking-wider">O Rei dos Cogumelos</span>
+                        <h3 class="text-lg font-bold text-terra-900 mt-1 mb-1">Portobello</h3>
+                        <p class="text-xs text-terra-600 mb-4">Grande e suculento, perfeito para hambúrgueres vegetarianos.</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-xs font-semibold text-terra-700 mb-1">Selecione o tamanho:</label>
+                            <select id="var-portobello" class="w-full bg-white border border-terra-300 rounded-xl px-3 py-2 text-xs text-terra-800 focus:outline-none focus:border-musgo">
+                                <option value="Bandeja 200g|24.00">Bandeja 200g - R$ 24,00</option>
+                                <option value="Bandeja 400g (Família)|46.00">Bandeja 400g (Família) - R$ 46,00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addToCart('Portobello', 'var-portobello')" class="w-full bg-musgo hover:bg-musgo-dark text-white py-2.5 rounded-xl text-xs font-medium transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Adicionar ao Carrinho
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Seção de Cafés Especiais -->
+    <section id="cafes" class="py-20 bg-terra-100/60 border-t border-b border-terra-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-musgo font-semibold text-sm uppercase tracking-widest bg-musgo/10 px-3 py-1 rounded-full">Origem Controlada</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-terra-900 mt-3 mb-4">Cafés Especiais</h2>
+                <p class="text-terra-600 text-base">
+                    Grãos 100% Arábica de alta altitude divididos em três categorias para atender todos os rituais de preparo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Café 1: Grãos Verdes -->
+                <div class="bg-white rounded-3xl p-8 border border-terra-200 shadow-sm flex flex-col justify-between hover:shadow-lg transition">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-musgo/10 text-musgo flex items-center justify-center text-xl mb-6 font-bold">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+                        <span class="text-[10px] font-bold text-musgo uppercase tracking-wider">Para Torra Caseira</span>
+                        <h3 class="text-xl font-bold text-terra-900 mt-1 mb-3">Grãos Verdes (Cru)</h3>
+                        <p class="text-sm text-terra-600 mb-6">Para entusiastas que controlam a torra em casa (Air Fryer ou tambores).</p>
+                        
+                        <div class="mb-6">
+                            <label class="block text-xs font-semibold text-terra-700 mb-1">Embalagem:</label>
+                            <select id="var-graos-verdes" class="w-full bg-terra-50 border border-terra-300 rounded-xl px-3 py-2.5 text-xs text-terra-800 focus:outline-none focus:border-musgo">
+                                <option value="Pacote 500g|45.00">Pacote 500g - R$ 45,00</option>
+                                <option value="Pacote 1kg|85.00">Pacote 1kg - R$ 85,00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addToCart('Café Grãos Verdes (Cru)', 'var-graos-verdes')" class="w-full bg-terra-800 hover:bg-terra-900 text-white font-medium py-3 rounded-xl transition text-sm">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+
+                <!-- Café 2: Grãos Torrados -->
+                <div class="bg-white rounded-3xl p-8 border-2 border-musgo shadow-lg flex flex-col justify-between relative hover:shadow-xl transition">
+                    <div class="absolute -top-3 right-6 bg-musgo text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+                        Mais Vendido
+                    </div>
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-musgo text-white flex items-center justify-center text-xl mb-6 font-bold">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                        </div>
+                        <span class="text-[10px] font-bold text-musgo uppercase tracking-wider">Moagem na Hora</span>
+                        <h3 class="text-xl font-bold text-terra-900 mt-1 mb-3">Grãos Torrados</h3>
+                        <p class="text-sm text-terra-600 mb-6">Torra fresca artesanal com notas de caramelo e chocolate.</p>
+                        
+                        <div class="mb-6">
+                            <label class="block text-xs font-semibold text-terra-700 mb-1">Embalagem:</label>
+                            <select id="var-graos-torrados" class="w-full bg-terra-50 border border-terra-300 rounded-xl px-3 py-2.5 text-xs text-terra-800 focus:outline-none focus:border-musgo">
+                                <option value="Pacote 250g|32.00">Pacote 250g - R$ 32,00</option>
+                                <option value="Pacote 500g|58.00">Pacote 500g - R$ 58,00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addToCart('Café Grãos Torrados', 'var-graos-torrados')" class="w-full bg-musgo hover:bg-musgo-dark text-white font-medium py-3 rounded-xl transition text-sm shadow-md">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+
+                <!-- Café 3: Café Moído -->
+                <div class="bg-white rounded-3xl p-8 border border-terra-200 shadow-sm flex flex-col justify-between hover:shadow-lg transition">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-musgo/10 text-musgo flex items-center justify-center text-xl mb-6 font-bold">
+                            <i class="fa-solid fa-filter"></i>
+                        </div>
+                        <span class="text-[10px] font-bold text-musgo uppercase tracking-wider">Praticidade & Qualidade</span>
+                        <h3 class="text-xl font-bold text-terra-900 mt-1 mb-3">Café Moído Artesanal</h3>
+                        <p class="text-sm text-terra-600 mb-6">Moído no ponto ideal para o seu método de extração favorito.</p>
+                        
+                        <div class="mb-6">
+                            <label class="block text-xs font-semibold text-terra-700 mb-1">Moagem & Peso:</label>
+                            <select id="var-cafe-imoido" class="w-full bg-terra-50 border border-terra-300 rounded-xl px-3 py-2.5 text-xs text-terra-800 focus:outline-none focus:border-musgo">
+                                <option value="250g - Filtro de Papel|30.00">250g (Filtro de Papel) - R$ 30,00</option>
+                                <option value="250g - Prensa Francesa|30.00">250g (Prensa Francesa) - R$ 30,00</option>
+                                <option value="250g - Cafeteira Moka|30.00">250g (Cafeteira Moka) - R$ 30,00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addToCart('Café Moído Artesanal', 'var-cafe-imoido')" class="w-full bg-terra-800 hover:bg-terra-900 text-white font-medium py-3 rounded-xl transition text-sm">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Guia & Dicas -->
+    <section id="receitas" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-musgo font-semibold text-sm uppercase tracking-widest bg-musgo/10 px-3 py-1 rounded-full">Guia Milo</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-terra-900 mt-3 mb-4">Conservação & Preparo</h2>
+                <p class="text-terra-600 text-base">Dicas simples para garantir o frescor dos cogumelos e o aroma perfeito do seu café.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-terra-50 rounded-2xl p-6 border border-terra-200">
+                    <div class="w-10 h-10 rounded-xl bg-musgo/10 text-musgo flex items-center justify-center text-lg mb-4 font-bold">
+                        <i class="fa-solid fa-snowflake"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-terra-900 mb-2">Como guardar Cogumelos</h3>
+                    <p class="text-xs text-terra-600 leading-relaxed">Nunca lave antes de guardar! Mantenha na embalagem original ou em saco de papel pardo na geladeira para até 7 dias de frescor.</p>
+                </div>
+                <div class="bg-terra-50 rounded-2xl p-6 border border-terra-200">
+                    <div class="w-10 h-10 rounded-xl bg-musgo/10 text-musgo flex items-center justify-center text-lg mb-4 font-bold">
+                        <i class="fa-solid fa-fire-burner"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-terra-900 mb-2">Shimeji na Manteiga</h3>
+                    <p class="text-xs text-terra-600 leading-relaxed">Separe com as mãos, doure o alho na manteiga, adicione o shimeji fresco e finalize com shoyu orgânico. Pronto em 10 minutos.</p>
+                </div>
+                <div class="bg-terra-50 rounded-2xl p-6 border border-terra-200">
+                    <div class="w-10 h-10 rounded-xl bg-musgo/10 text-musgo flex items-center justify-center text-lg mb-4 font-bold">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-terra-900 mb-2">A Água do Café</h3>
+                    <p class="text-xs text-terra-600 leading-relaxed">Desligue o fogo nas primeiras bolhas (90°C a 95°C) para não queimar o pó e realçar a doçura natural do grão.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Rodapé -->
+    <footer class="bg-terra-950 text-terra-300 py-12 border-t border-terra-900 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div class="space-y-3">
+                <span class="text-white font-bold text-base block">Milo Coffee</span>
+                <p class="text-terra-400 leading-relaxed">União exclusiva entre cogumelos frescos e cafés especiais em Belo Horizonte.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-3 tracking-wider uppercase text-[11px]">Navegação</h4>
+                <ul class="space-y-2 text-terra-400">
+                    <li><a href="#inicio" class="hover:text-white transition">Início</a></li>
+                    <li><a href="#cogumelos" class="hover:text-white transition">Cogumelos In Natura</a></li>
+                    <li><a href="#cafes" class="hover:text-white transition">Cafés Especiais</a></li>
+                    <li><a href="#receitas" class="hover:text-white transition">Guia & Dicas</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-3 tracking-wider uppercase text-[11px]">Logística</h4>
+                <p class="text-terra-400 leading-relaxed">
+                    <i class="fa-solid fa-truck-fast text-musgo mr-1"></i> Entregas em <strong>Belo Horizonte</strong> e região metropolitana.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-3 tracking-wider uppercase text-[11px]">Atendimento</h4>
+                <a href="https://wa.me/5531999999999?text=Olá!%20Gostaria%20de%20tirar%20uma%20dúvida." target="_blank" class="inline-flex items-center gap-2 bg-musgo hover:bg-musgo-dark text-white px-4 py-2.5 rounded-xl font-medium transition text-xs">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> Tirar Dúvidas (WhatsApp)
+                </a>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-terra-900/60 text-center text-terra-500">
+            <p>&copy; 2026 Milo Coffee. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts de Carrinho e Checkout Integrado -->
+    <script>
+        let cart = [];
+        let checkoutStep = 'cart'; // 'cart', 'address', 'payment', 'success'
+        let orderData = { name: '', address: '', paymentMethod: 'pix' };
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('hidden');
+            if (!drawer.classList.contains('hidden')) {
+                checkoutStep = 'cart';
+                renderCartUI();
+            }
+        }
+
+        function addToCart(productName, selectId) {
+            const select = document.getElementById(selectId);
+            const [variation, priceStr] = select.value.split('|');
+            const price = parseFloat(priceStr);
+
+            const existing = cart.find(i => i.name === productName && i.variation === variation);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ name: productName, variation, price, quantity: 1 });
+            }
+
+            updateCartCount();
+            toggleCart();
+        }
+
+        function changeQuantity(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartCount();
+            renderCartUI();
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+            document.getElementById('cart-count').innerText = totalItems;
+        }
+
+        function renderCartUI() {
+            const body = document.getElementById('drawer-body');
+            const footer = document.getElementById('drawer-footer');
+            const title = document.getElementById('drawer-title');
+
+            if (checkoutStep === 'cart') {
+                title.innerText = "Sua Sacola de Compras";
+                if (cart.length === 0) {
+                    body.innerHTML = `<div class="text-center py-16"><i class="fa-solid fa-basket-shopping text-4xl text-terra-300 mb-3"></i><p class="text-terra-500 text-sm">Sua sacola está vazia.</p></div>`;
+                    footer.innerHTML = ``;
+                    return;
+                }
+
+                let html = '<div class="divide-y divide-terra-100 space-y-3">';
+                let total = 0;
+                cart.forEach((item, idx) => {
+                    const subtotal = item.price * item.quantity;
+                    total += subtotal;
+                    html += `
+                        <div class="pt-3 flex justify-between items-center text-xs">
+                            <div class="space-y-1">
+                                <h4 class="font-bold text-terra-900 text-sm">${item.name}</h4>
+                                <p class="text-terra-500">${item.variation}</p>
+                                <p class="text-musgo font-semibold">R$ ${item.price.toFixed(2)}</p>
+                            </div>
+                            <div class="flex items-center gap-2 bg-terra-50 px-2 py-1 rounded-lg border border-terra-200">
+                                <button onclick="changeQuantity(${idx}, -1)" class="text-terra-600 hover:text-terra-900 px-1"><i class="fa-solid fa-minus"></i></button>
+                                <span class="font-bold text-terra-900 w-5 text-center">${item.quantity}</span>
+                                <button onclick="changeQuantity(${idx}, 1)" class="text-terra-600 hover:text-terra-900 px-1"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>`;
+                });
+                html += '</div>';
+                body.innerHTML = html;
+
+                footer.innerHTML = `
+                    <div class="flex justify-between items-center text-terra-900 font-bold text-lg">
+                        <span>Total:</span>
+                        <span>R$ ${total.toFixed(2)}</span>
+                    </div>
+                    <button onclick="goToAddressStep()" class="w-full bg-musgo hover:bg-musgo-dark text-white font-medium py-3.5 rounded-xl transition shadow-md text-sm flex items-center justify-center gap-2">
+                        <span>Avançar para Endereço</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>`;
+            } 
+            else if (checkoutStep === 'address') {
+                title.innerText = "Endereço em Belo Horizonte";
+                body.innerHTML = `
+                    <div class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-semibold text-terra-700 mb-1">Nome Completo</label>
+                            <input type="text" id="cust-name" class="w-full border border-terra-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-musgo text-sm" placeholder="Ex: Maria Silva">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-terra-700 mb-1">Telefone / WhatsApp</label>
+                            <input type="text" id="cust-phone" class="w-full border border-terra-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-musgo text-sm" placeholder="(31) 99999-9999">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-terra-700 mb-1">Endereço de Entrega (Rua, Número, Bairro)</label>
+                            <textarea id="cust-addr" rows="3" class="w-full border border-terra-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-musgo text-sm" placeholder="Ex: Rua da Bahia, 1000 - Centro, BH"></textarea>
+                        </div>
+                    </div>`;
+                footer.innerHTML = `
+                    <div class="flex gap-2">
+                        <button onclick="checkoutStep='cart'; renderCartUI();" class="w-1/3 bg-terra-200 hover:bg-terra-300 text-terra-800 font-medium py-3 rounded-xl transition text-xs">Voltar</button>
+                        <button onclick="goToPaymentStep()" class="w-2/3 bg-musgo hover:bg-musgo-dark text-white font-medium py-3 rounded-xl transition text-xs shadow-md">Escolher Pagamento</button>
+                    </div>`;
+            }
+            else if (checkoutStep === 'payment') {
+                title.innerText = "Forma de Pagamento";
+                body.innerHTML = `
+                    <div class="space-y-4 text-xs">
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3 p-3.5 border border-terra-300 rounded-xl cursor-pointer hover:bg-terra-50 transition">
+                                <input type="radio" name="pay" value="pix" checked onclick="togglePaymentView('pix')" class="accent-musgo">
+                                <div>
+                                    <span class="font-bold text-terra-900 block text-sm">PIX (Aprovação Imediata)</span>
+                                    <span class="text-terra-500">QR Code gerado na hora</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-3 p-3.5 border border-terra-300 rounded-xl cursor-pointer hover:bg-terra-50 transition">
+                                <input type="radio" name="pay" value="card" onclick="togglePaymentView('card')" class="accent-musgo">
+                                <div>
+                                    <span class="font-bold text-terra-900 block text-sm">Cartão de Crédito</span>
+                                    <span class="text-terra-500">Ambiente seguro simulado</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Área Pix (Simulada) -->
+                        <div id="pix-container" class="bg-terra-50 p-4 rounded-xl border border-terra-200 text-center space-y-3">
+                            <p class="font-semibold text-terra-900">Escaneie o QR Code abaixo com seu app:</p>
+                            <div class="w-40 h-40 bg-white border-2 border-terra-300 rounded-xl mx-auto flex items-center justify-center p-2">
+                                <img src="https://placehold.co/150x150/38281B/FFF?text=QR+CODE+PIX" alt="QR Code Pix" class="w-full h-full object-contain">
+                            </div>
+                            <p class="text-[11px] text-terra-500">Chave Pix: <strong>pix@milocoffee.com.br</strong></p>
+                        </div>
+
+                        <!-- Área Cartão (Simulada) -->
+                        <div id="card-container" class="bg-terra-50 p-4 rounded-xl border border-terra-200 space-y-3 hidden">
+                            <div>
+                                <label class="block font-semibold text-terra-700 mb-1">Número do Cartão</label>
+                                <input type="text" class="w-full bg-white border border-terra-300 rounded-lg px-3 py-2 text-xs" placeholder="4532 •••• •••• 8890">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" class="bg-white border border-terra-300 rounded-lg px-3 py-2 text-xs" placeholder="MM/AA">
+                                <input type="text" class="bg-white border border-terra-300 rounded-lg px-3 py-2 text-xs" placeholder="CVV">
+                            </div>
+                        </div>
+                    </div>`;
+                footer.innerHTML = `
+                    <div class="flex gap-2">
+                        <button onclick="checkoutStep='address'; renderCartUI();" class="w-1/3 bg-terra-200 hover:bg-terra-300 text-terra-800 font-medium py-3 rounded-xl transition text-xs">Voltar</button>
+                        <button onclick="finalizeOrder()" class="w-2/3 bg-musgo hover:bg-musgo-dark text-white font-medium py-3 rounded-xl transition text-xs shadow-md">Finalizar Pagamento</button>
+                    </div>`;
+            }
+            else if (checkoutStep === 'success') {
+                title.innerText = "Pedido Concluído!";
+                body.innerHTML = `
+                    <div class="text-center py-10 space-y-4">
+                        <div class="w-16 h-16 bg-musgo/10 text-musgo rounded-full flex items-center justify-center mx-auto text-2xl">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h4 class="font-bold text-terra-900 text-base">Pagamento Confirmado!</h4>
+                        <p class="text-xs text-terra-600 leading-relaxed px-4">
+                            Obrigado pela sua compra, <strong>${orderData.name}</strong>! Seus cogumelos frescos e cafés especiais já foram anotados para nossa próxima rota de entrega em Belo Horizonte.
+                        </p>
+                    </div>`;
+                footer.innerHTML = `
+                    <button onclick="resetStore()" class="w-full bg-terra-800 hover:bg-terra-900 text-white font-medium py-3 rounded-xl transition text-sm shadow-md">
+                        Concluir e Fechar
+                    </button>`;
+            }
+        }
+
+        function goToAddressStep() {
+            checkoutStep = 'address';
+            renderCartUI();
+        }
+
+        function goToPaymentStep() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const addr = document.getElementById('cust-addr').value;
+
+            if (!name || !phone || !addr) {
+                alert("Por favor, preencha todos os campos de endereço e contato.");
+                return;
+            }
+
+            orderData.name = name;
+            orderData.phone = phone;
+            orderData.address = addr;
+            checkoutStep = 'payment';
+            renderCartUI();
+        }
+
+        function togglePaymentView(method) {
+            orderData.paymentMethod = method;
+            const pixBox = document.getElementById('pix-container');
+            const cardBox = document.getElementById('card-container');
+            if (method === 'pix') {
+                pixBox.classList.remove('hidden');
+                cardBox.classList.add('hidden');
+            } else {
+                pixBox.classList.add('hidden');
+                cardBox.classList.remove('hidden');
+            }
+        }
+
+        function finalizeOrder() {
+            checkoutStep = 'success';
+            cart = [];
+            updateCartCount();
+            renderCartUI();
+        }
+
+        function resetStore() {
+            toggleCart();
+        }
+    </script>
+</body>
+</html>
